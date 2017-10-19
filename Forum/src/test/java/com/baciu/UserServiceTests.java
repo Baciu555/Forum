@@ -2,6 +2,7 @@ package com.baciu;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.InputMismatchException;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -15,7 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.baciu.DAO.UserDAO;
 import com.baciu.entity.User;
+import com.baciu.exception.EmailExistsException;
+import com.baciu.exception.UsernameExistsException;
 import com.baciu.service.UserService;
 
 @RunWith(SpringRunner.class)
@@ -25,6 +29,9 @@ public class UserServiceTests {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private UserDAO userDAO;
 	
 	@Before
 	public void setUp() {
@@ -69,40 +76,57 @@ public class UserServiceTests {
 	@Test
 	public void testGetById() {
 		Long userId = new Long(1);
+		String userName = "user";
 		User user = userService.getById(userId);
 		
 		Assert.assertNotNull("failure - expected not null", user);
 		Assert.assertEquals("failure - expected equals", new Long(userId), user.getId());
-		Assert.assertEquals("failure - expected equals", "baciu", user.getUsername());
+		Assert.assertEquals("failure - expected equals", userName, user.getUsername());
 	}
 	
 	@Test
 	public void testLogIn() {
 		Long userId = new Long(1);
-		String userName = "baciu";
-		String password = "123";
+		String userName = "user";
+		String password = "haslo";
 		Exception exception = null;
+		User user = null;
 		
 		try {
-			User user = userService.logIn(userName, password);
+			user = userService.logIn(userName, password);
 		} catch (Exception e) {
 			exception = e;
 		}
+		
+		Assert.assertNull("failure - expected null", exception);
+		Assert.assertNotNull("failure - expected not null", user);
+		Assert.assertEquals("failure - expect equal values", userId, user.getId());
+		Assert.assertEquals("failure - expected equal values", userName, user.getUsername());
+		Assert.assertEquals("failure - expected equal values", password, user.getPassword());
+		
 	}
 	
 	@Test
 	public void testRegister() {
+		User user = new User();
+		user.setUsername("username123");
+		user.setPassword("password123");
+		String passwordConfirm = "password123";
+		user.setEmail("email123@gmail.com");
+		Exception exception = null;
 		
-	}
-	
-	@Test
-	public void testUpdate() {
+		try {
+			userService.register(user, passwordConfirm);
+		} catch (InputMismatchException | EmailExistsException | UsernameExistsException e) {
+			exception = e;
+		}
 		
-	}
-	
-	@Test
-	public void testUploadAvatar() {
+		User newUser = userDAO.getByUsername(user.getUsername());
 		
+		Assert.assertEquals("failure - expected equal values", user.getUsername(), newUser.getUsername());
+		Assert.assertEquals("failure - expected equal values", user.getPassword(), newUser.getPassword());
+		Assert.assertEquals("failure - expected equal values", user.getEmail(), newUser.getEmail());
+		Assert.assertNull("failure - expected null", exception);
 	}
 
 }
