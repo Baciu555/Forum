@@ -23,7 +23,10 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import lombok.Data;
+
 @Entity
+@Data
 @Table(name = "thread")
 public class Thread implements Serializable {
 	
@@ -67,102 +70,5 @@ public class Thread implements Serializable {
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "thread")
 	private Set<Comment> comments = new HashSet<Comment>(0);
-	
-	public Thread() {}
-
-	public Thread(Long id, String subject, Date entryDate, Long viewsCount, String content) {
-		super();
-		this.id = id;
-		this.subject = subject;
-		this.entryDate = entryDate;
-		this.viewsCount = viewsCount;
-		this.content = content;
-	}
-
-	public Thread(Long id, String subject, Date entryDate, Long viewsCount, String content, User user,
-			Section section, Set<Tag> tags, Set<Comment> comments) {
-		super();
-		this.id = id;
-		this.subject = subject;
-		this.entryDate = entryDate;
-		this.viewsCount = viewsCount;
-		this.content = content;
-		this.user = user;
-		this.section = section;
-		this.tags = tags;
-		this.comments = comments;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getSubject() {
-		return subject;
-	}
-
-	public void setSubject(String subject) {
-		this.subject = subject;
-	}
-
-	public Date getEntryDate() {
-		return entryDate;
-	}
-
-	public void setEntryDate(Date entryDate) {
-		this.entryDate = entryDate;
-	}
-
-	public Long getViewsCount() {
-		return viewsCount;
-	}
-
-	public void setViewsCount(Long viewsCount) {
-		this.viewsCount = viewsCount;
-	}
-
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public Section getSection() {
-		return section;
-	}
-
-	public void setSection(Section section) {
-		this.section = section;
-	}
-
-	public Set<Tag> getTags() {
-		return tags;
-	}
-
-	public void setTags(Set<Tag> tags) {
-		this.tags = tags;
-	}
-
-	public Set<Comment> getComments() {
-		return comments;
-	}
-
-	public void setComments(Set<Comment> comments) {
-		this.comments = comments;
-	}
 
 }

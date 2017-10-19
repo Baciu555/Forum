@@ -15,7 +15,10 @@ import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+import lombok.Data;
+
 @Entity
+@Data
 @Table(name = "tags")
 public class Tag implements Serializable {
 	
@@ -33,43 +36,4 @@ public class Tag implements Serializable {
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "tags")
 	private Set<Thread> threads =  new HashSet<Thread>(0);
 
-	public Tag() {}
-
-	public Tag(Long id, String name) {
-		super();
-		this.id = id;
-		this.name = name;
-	}
-
-	public Tag(Long id, String name, Set<Thread> threads) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.threads = threads;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Set<Thread> getThreads() {
-		return threads;
-	}
-
-	public void setThreads(Set<Thread> threads) {
-		this.threads = threads;
-	}
-	
 }

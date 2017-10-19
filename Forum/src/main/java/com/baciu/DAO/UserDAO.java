@@ -23,7 +23,6 @@ public class UserDAO {
 		String hql = "FROM User as usr WHERE usr.username = :username AND usr.password = :password";
 		User user = em.createQuery(hql, User.class).setParameter("username", userName).setParameter("password", password)
 				.getSingleResult();
-
 		return user;
 	}
 
@@ -74,6 +73,16 @@ public class UserDAO {
 	public List<User> getBestUsers() {
 		String hql = "FROM User as u ORDER BY u.commentsCount DESC";
 		return em.createQuery(hql, User.class).setMaxResults(5).getResultList();
+	}
+	
+	public User getByUsername(String userName) {
+		User user = null;
+		try {
+			user = (User)em.createQuery("FROM User u WHERE u.username = ?").setParameter(1, userName).getSingleResult();
+		} catch (NoResultException e) {
+			return user;
+		}
+		return user;
 	}
 
 }

@@ -15,7 +15,10 @@ import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+import lombok.Data;
+
 @Entity
+@Data
 @Table(name = "section")
 public class Section implements Serializable {
 	
@@ -32,53 +35,5 @@ public class Section implements Serializable {
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "section")
 	private Set<Thread> threads = new HashSet<Thread>(0);
-	
-	
-	public Section() {}
-
-
-	public Section(Long id, String name) {
-		super();
-		this.id = id;
-		this.name = name;
-	}
-
-
-	public Section(Long id, String name, Set<Thread> threads) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.threads = threads;
-	}
-
-
-	public Long getId() {
-		return id;
-	}
-
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-
-	public String getName() {
-		return name;
-	}
-
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-
-	public Set<Thread> getThreads() {
-		return threads;
-	}
-
-
-	public void setThread(Set<Thread> threads) {
-		this.threads = threads;
-	}
 
 }

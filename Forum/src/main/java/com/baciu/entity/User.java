@@ -23,7 +23,10 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.Data;
+
 @Entity
+@Data
 @Table(name = "users")
 public class User implements Serializable {
 	
@@ -73,136 +76,5 @@ public class User implements Serializable {
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private Set<Comment> comment = new HashSet<Comment>(0);
-
-	public User() {}
-
-	public User(Long id, String username, String password, String email, Date joinDate, String permission,
-			String avatarPath, Date banExpire, Integer banCount) {
-		super();
-		this.id = id;
-		this.username = username;
-		this.password = password;
-		this.email = email;
-		this.joinDate = joinDate;
-		this.permission = permission;
-		this.avatarPath = avatarPath;
-		this.banExpire = banExpire;
-		this.banCount = banCount;
-	}
-
-	public User(Long id, String username, String password, String email, Date joinDate, String permission,
-			String avatarPath, Date banExpire, Integer banCount,
-			Set<Thread> thread, Set<Comment> comment) {
-		super();
-		this.id = id;
-		this.username = username;
-		this.password = password;
-		this.email = email;
-		this.joinDate = joinDate;
-		this.permission = permission;
-		this.avatarPath = avatarPath;
-		this.banExpire = banExpire;
-		this.banCount = banCount;
-		this.thread = thread;
-		this.comment = comment;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public Date getJoinDate() {
-		return joinDate;
-	}
-
-	public void setJoinDate(Date joinDate) {
-		this.joinDate = joinDate;
-	}
-
-	public String getPermission() {
-		return permission;
-	}
-
-	public void setPermission(String permission) {
-		this.permission = permission;
-	}
-
-	public String getAvatarPath() {
-		return avatarPath;
-	}
-
-	public void setAvatarPath(String avatarPath) {
-		this.avatarPath = avatarPath;
-	}
-
-	public Date getBanExpire() {
-		return banExpire;
-	}
-
-	public void setBanExpire(Date banExpire) {
-		this.banExpire = banExpire;
-	}
-
-	public Integer getBanCount() {
-		return banCount;
-	}
-
-	public void setBanCount(Integer banCount) {
-		this.banCount = banCount;
-	}
-
-	public Set<Thread> getThread() {
-		return thread;
-	}
-
-	public void setThread(Set<Thread> thread) {
-		this.thread = thread;
-	}
-
-	public Set<Comment> getComment() {
-		return comment;
-	}
-
-	public void setComment(Set<Comment> comment) {
-		this.comment = comment;
-	}
-
-	public Integer getCommentsCount() {
-		return commentsCount;
-	}
-
-	public void setCommentsCount(Integer commentsCount) {
-		this.commentsCount = commentsCount;
-	}
-	
-	
 
 }
