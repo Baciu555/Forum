@@ -13,9 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.baciu.DAO.CommentDAO;
 import com.baciu.entity.Comment;
-import com.baciu.entity.User;
 import com.baciu.service.CommentService;
-import com.baciu.service.UserService;
 
 
 @RunWith(SpringRunner.class)
