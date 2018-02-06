@@ -18,9 +18,11 @@ import javax.persistence.TemporalType;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
+@EqualsAndHashCode(exclude = {"thread", "user"})
 @Table(name = "comments")
 public class Comment implements Serializable {
 	

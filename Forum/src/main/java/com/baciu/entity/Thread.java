@@ -24,9 +24,11 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
+@EqualsAndHashCode(exclude = {"user", "section", "tags", "comments"})
 @Table(name = "thread")
 public class Thread implements Serializable {
 	

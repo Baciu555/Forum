@@ -16,9 +16,11 @@ import javax.persistence.Table;
 import org.hibernate.validator.constraints.NotBlank;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
+@EqualsAndHashCode(exclude = "threads")
 @Table(name = "section")
 public class Section implements Serializable {
 	
