@@ -40,10 +40,10 @@ public class MainController {
 		
 		List<Section> sections = sectionService.getAllSections();
 		model.addAttribute("sections", sections);
-		
-		int threadsQuantity = 5;
-		List<List<Thread>> sectionsThreads = threadService.getSectionsThreads(threadsQuantity);
-		model.addAttribute("sectionsThreads", sectionsThreads);
+//		
+//		int threadsQuantity = 5;
+//		List<List<Thread>> sectionsThreads = threadService.getSectionsThreads(threadsQuantity);
+//		model.addAttribute("sectionsThreads", sectionsThreads);
 		
 		List<User> bestUsers = userService.getBestUsers();
 		model.addAttribute("bestUsers", bestUsers);

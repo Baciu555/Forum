@@ -3,16 +3,16 @@ package com.baciu.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.baciu.DAO.CommentDAO;
 import com.baciu.entity.Comment;
 import com.baciu.entity.Thread;
 import com.baciu.entity.User;
+import com.baciu.repository.CommentRepository;
 
 @Service
 public class CommentService {
 	
 	@Autowired
-	private CommentDAO commentDAO;
+	private CommentRepository commentRepository;
 	
 	public void addComment(Comment comment, long threadId, User loggedUser) {
 		User user = new User();
@@ -23,16 +23,12 @@ public class CommentService {
 		thread.setId(threadId);
 		comment.setThread(thread);
 		
-		try {
-			commentDAO.addComment(comment);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		commentRepository.save(comment);
 	}
 	
 	public void deleteComment(long commentId) {
-		Comment comment = commentDAO.getById(commentId);
-		commentDAO.deleteComment(comment);
+		Comment comment = commentRepository.findOne(commentId);
+		commentRepository.delete(comment);
 	}
 
 }

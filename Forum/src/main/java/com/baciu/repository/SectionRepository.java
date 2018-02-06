@@ -8,4 +8,5 @@ import com.baciu.entity.Section;
 @Repository
 public interface SectionRepository extends CrudRepository<Section, Long> {
 
+	Section findByName(String name);
 }

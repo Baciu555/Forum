@@ -13,6 +13,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 	
 	User findByUsername(String username);
 	User findByEmail(String email);
+	User findByUsernameAndPassword(String username, String password);
 	
 	@Query("FROM User as u ORDER BY u.commentsCount DESC")
 	List<User> getBestUsers();

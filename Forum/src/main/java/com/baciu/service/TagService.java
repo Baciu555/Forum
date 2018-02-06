@@ -1,45 +1,33 @@
 package com.baciu.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.baciu.DAO.TagDAO;
 import com.baciu.entity.Tag;
+import com.baciu.repository.TagRepository;
 
 @Service
 public class TagService {
 	
 	@Autowired
-	private TagDAO tagDAO;
+	private TagRepository tagRepository;
 	
 	public List<Tag> getAllTags() {
-		List<Tag> tags = new ArrayList<Tag>();
-		try {
-			tags = tagDAO.getAllTags();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return tags;
+		return (List<Tag>) tagRepository.findAll();
 	}
 	
 	public Tag getById(long tagId) {
-		Tag tag = new Tag();
-		try {
-			tag = tagDAO.getById(tagId);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		Tag tag = tagRepository.findOne(tagId);
 		return tag;
 	}
 	
 	public boolean addTag(Tag tag) {
-		if (tagDAO.tagExists(tag.getName()))
+		if (tagRepository.findByName(tag.getName()) != null)
 			return false;
 		
-		tagDAO.addTag(tag);
+		tagRepository.save(tag);
 		return true;
 	}
 

@@ -12,17 +12,17 @@ import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.List;
 
-import javax.persistence.NoResultException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.baciu.DAO.UserDAO;
 import com.baciu.entity.User;
+import com.baciu.exception.AccountBannedException;
 import com.baciu.exception.EmailExistsException;
 import com.baciu.exception.FileUploadException;
+import com.baciu.exception.UserNotExistsException;
 import com.baciu.exception.UsernameExistsException;
+import com.baciu.repository.UserRepository;
 
 @Service
 public class UserService {
@@ -30,49 +30,48 @@ public class UserService {
 	private final Path UPLOADED_FOLDER = Paths.get("uploads");
 	private final String DEFAULT_AVATAR_NAME = "default-avatar.jpg";
 	private final String DEFAULT_PERMISSION = "user";
-
+	private final Integer DEFAULT_BAN_COUNT = 0;
+	
 	@Autowired
-	private UserDAO userDAO;
+	private UserRepository userRepository;
 
-	public User logIn(String userName, String password) throws Exception, NoResultException {
-		User user = userDAO.userExists(userName, password);
+	public User logIn(String username, String password) throws UserNotExistsException, AccountBannedException {
+		User user = userRepository.findByUsernameAndPassword(username, password);
 		
-		if (user.getBanCount() >= 3) {
-			String msg = "Konto zbanowane na zawsze";
-			throw new Exception(msg);
-		}
+		if (user == null)
+			throw new UserNotExistsException();
+		
+		
+		if (user.getBanCount() >= 3)
+			throw new AccountBannedException("Konto zbanowane na zawsze");
 		
 		Date currentDate = new Date();
 		if (user.getBanExpire() != null && user.getBanExpire().after(currentDate)) {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			String msg = "Konto zbanowane do : " + sdf.format(user.getBanExpire());
-			throw new Exception(msg);
+			throw new AccountBannedException(msg);
 		}
 		
 		if (user.getBanExpire() != null && !user.getBanExpire().after(currentDate)) {
 			user.setBanExpire(null);
-			userDAO.update(user);
+			user = userRepository.save(user);
 		}
 		
 		return user;
 	}
 
 	public User getById(long userId) {
-		User user = new User();
-
-		try {
-			user = userDAO.getById(userId);
-		} catch (NoResultException noResultException) {
-			return null;
-		}
-
+		User user = userRepository.findOne(userId);
+		
+		if (user == null) return null;
+		
 		return user;
 	}
 
 	public void register(User user, String passwordConf)
 			throws InputMismatchException, EmailExistsException, UsernameExistsException {
 
-		if (userDAO.usernameExists(user.getUsername())) {
+		if (userRepository.findByUsername(user.getUsername()) != null) {
 			throw new UsernameExistsException("Nazwa zajęta");
 		}
 		
@@ -80,16 +79,16 @@ public class UserService {
 			throw new InputMismatchException("Hasła nie są identyczne");
 		}
 
-		if (userDAO.emailExists(user.getEmail())) {
+		if (userRepository.findByEmail(user.getEmail()) != null) {
 			throw new EmailExistsException("Email zajęty");
 		}
 		
 		user.setAvatarPath(DEFAULT_AVATAR_NAME);
 		user.setPermission(DEFAULT_PERMISSION);
+		user.setBanCount(DEFAULT_BAN_COUNT);
 		user.setJoinDate(new Date());
-		user.setBanCount(0);
-
-		userDAO.register(user);
+		
+		userRepository.save(user);
 	}
 
 	public void update(User user, String passwordConfirm, MultipartFile file) throws FileUploadException, Exception {
@@ -110,7 +109,12 @@ public class UserService {
 		}
 
 		user.setAvatarPath(file.getOriginalFilename());
-		userDAO.update(user);
+		user.setUsername(usr.getUsername());
+		user.setPassword(usr.getPassword());
+		user.setEmail(usr.getEmail());
+		user.setBanExpire(usr.getBanExpire());
+		
+		userRepository.save(user);
 	}
 
 	public void uploadAvatar(MultipartFile file) throws FileUploadException {
@@ -146,8 +150,10 @@ public class UserService {
 	public void banUser(long userId, Date date) throws NullPointerException, Exception {
 		Date currentDate = new Date();
 		if (date.after(currentDate)) {
-			User user = userDAO.getById(userId);
-			userDAO.banUser(user, date);
+			User user = userRepository.findOne(userId);
+			user.setBanExpire(date);
+			user.setBanCount(user.getBanCount() + 1);
+			userRepository.save(user);
 		} else {
 			System.out.println("Źle");
 			throw new Exception("Data musi poprzedziać dzien dzisiejszy");
@@ -155,6 +161,6 @@ public class UserService {
 	}
 	
 	public List<User> getBestUsers() {
-		return userDAO.getBestUsers();
+		return userRepository.getBestUsers();
 	}
 }
