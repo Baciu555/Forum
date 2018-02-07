@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
 <meta charset="UTF-8" />
 <title>Forum</title>
@@ -37,13 +37,11 @@
 						</ul></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
-					<li th:if="${not #lists.isEmpty(loggedUser)}"><a th:if="${loggedUser.permission == 'admin'}" href="/admin">Admin</a></li>
-					<li th:if="${#lists.isEmpty(loggedUser)}"><a href="/login">Zaloguj
+					<li sec:authorize="hasRole('ROLE_ADMIN')"><a href="/admin">Admin</a></li>
+					<li sec:authorize="!isAuthenticated()"><a href="/login">Zaloguj
 							sie</a></li>
-					<li th:if="${not #lists.isEmpty(loggedUser)}"><a
-						th:text="${loggedUser.username}" href="/account"></a></li>
-					<li th:if="${not #lists.isEmpty(loggedUser)}"><a href="/logout">Wyloguj
-							sie</a></li>
+					<li sec:authorize="isAuthenticated()"><a sec:authentication="name" href="/account"></a></li>
+					<li sec:authorize="isAuthenticated()"><a href="/logout">Wyloguj sie</a></li>
 				</ul>
 			</div>
 			<!-- /.navbar-collapse -->

@@ -1,12 +1,15 @@
 package com.baciu.controller;
 
 import java.util.InputMismatchException;
-import java.util.List;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,14 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.baciu.entity.Section;
 import com.baciu.entity.User;
-import com.baciu.exception.AccountBannedException;
 import com.baciu.exception.EmailExistsException;
-import com.baciu.exception.UserNotExistsException;
 import com.baciu.exception.UsernameExistsException;
 import com.baciu.service.SectionService;
-import com.baciu.service.SessionService;
 import com.baciu.service.UserService;
 
 @Controller
@@ -34,38 +33,24 @@ public class LoginController {
 	@Autowired
 	private UserService userService;
 
-	@Autowired
-	private SessionService sessionService;
-
 	@RequestMapping(value = "login", method = RequestMethod.GET)
-	public String showLoginPage(Model model, HttpSession session) {
-		User loggedUser = sessionService.getLoggedUser(session);
-		if (!(loggedUser == null))
-			return "redirect:/main";
-
-		List<Section> sections = sectionService.getAllSections();
-		model.addAttribute("loggedUser", loggedUser);
-		model.addAttribute("sections", sections);
+	public String showLoginPage(Model model) {
+		model.addAttribute("sections", sectionService.getAllSections());
 		model.addAttribute("user", new User());
 		return "login";
 	}
 
 	@RequestMapping(value = "login", method = RequestMethod.POST)
-	public String login(@ModelAttribute("user") User user, HttpSession session, Model model) {
-		User loggedUser = new User();
-		System.out.println(user);
-
-		try {
-			loggedUser = userService.logIn(user.getUsername(), user.getPassword());
-		} catch (UserNotExistsException e) {
-			model.addAttribute("loginMsg", "Niepoprawny login lub haslo");
-			return "login";
-		} catch (AccountBannedException e) {
-			model.addAttribute("loginMsg", e.getMessage());
-			return "login";
-		}
-		
-		session.setAttribute("userId", loggedUser.getId());
+	public String login(@ModelAttribute("user") User user, Model model) {
+//		try {
+//			loggedUser = userService.logIn(user.getUsername(), user.getPassword());
+//		} catch (UserNotExistsException e) {
+//			model.addAttribute("loginMsg", "Niepoprawny login lub haslo");
+//			return "login";
+//		} catch (AccountBannedException e) {
+//			model.addAttribute("loginMsg", e.getMessage());
+//			return "login";
+//		}
 		return "redirect:/main";
 	}
 
@@ -96,8 +81,10 @@ public class LoginController {
 	}
 
 	@RequestMapping(value = "logout", method = RequestMethod.GET)
-	public String logout(HttpSession session) {
-		session.removeAttribute("userId");
+	public String logout(HttpServletRequest request, HttpServletResponse response) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null)
+			new SecurityContextLogoutHandler().logout(request, response, auth);
 		return "redirect:main";
 	}
 }

@@ -35,13 +35,11 @@
 						</ul></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
-					<li th:if="${not #lists.isEmpty(loggedUser)}"><a th:if="${loggedUser.permission == 'admin'}" href="/admin">Admin</a></li>
-					<li th:if="${#lists.isEmpty(loggedUser)}"><a href="/login">Zaloguj
+					<li sec:authorize="hasRole('ROLE_ADMIN')"><a href="/admin">Admin</a></li>
+					<li sec:authorize="!isAuthenticated()"><a href="/login">Zaloguj
 							sie</a></li>
-					<li th:if="${not #lists.isEmpty(loggedUser)}"><a
-						th:text="${loggedUser.username}" href="/account"></a></li>
-					<li th:if="${not #lists.isEmpty(loggedUser)}"><a href="/logout">Wyloguj
-							sie</a></li>
+					<li sec:authorize="isAuthenticated()"><a sec:authentication="name" href="/account"></a></li>
+					<li sec:authorize="isAuthenticated()"><a href="/logout">Wyloguj sie</a></li>
 				</ul>
 			</div>
 			<!-- /.navbar-collapse -->
@@ -51,16 +49,6 @@
 	<main>
 	<div class="container">
 		<h1 class="title">Zaloguj sie</h1>
-		
-		<div sec:authorize="isAuthenticated()">
-  			This content is only shown to authenticated users.
-		</div>
-		<div sec:authorize="hasRole('ROLE_ADMIN')">
- 			 This content is only shown to administrators.
-		</div>
-		<div sec:authorize="hasRole('ROLE_USER')">
- 			 This content is only shown to users.
-		</div>
 		
 		<div class="row">
 			<div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-10 col-xs-offset-1">

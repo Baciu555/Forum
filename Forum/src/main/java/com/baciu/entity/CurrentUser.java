@@ -32,6 +32,10 @@ public class CurrentUser implements UserDetails {
 	public String getUsername() {
 		return user.getUsername();
 	}
+	
+	public Long getId() {
+		return user.getId();
+	}
 
 	@Override
 	public boolean isAccountNonExpired() {

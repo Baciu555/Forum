@@ -1,8 +1,5 @@
 package com.baciu.controller;
 
-import java.util.List;
-
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +17,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.baciu.entity.Section;
 import com.baciu.entity.Tag;
-import com.baciu.entity.User;
 import com.baciu.service.CommentService;
 import com.baciu.service.SectionService;
-import com.baciu.service.SessionService;
 import com.baciu.service.TagService;
 import com.baciu.service.ThreadService;
 
@@ -32,9 +27,6 @@ public class AdminController {
 	
 	@Autowired
 	private SectionService sectionService;
-	
-	@Autowired
-	private SessionService sessionService;
 	
 	@Autowired
 	private TagService tagService;
@@ -46,15 +38,8 @@ public class AdminController {
 	private CommentService commentService;
 	
 	@RequestMapping(value = "/admin", method = RequestMethod.GET)
-	public String showAdmin(Model model, HttpSession session) {
-		User loggedUser = sessionService.getLoggedUser(session);
-		if (!(loggedUser == null) && loggedUser.getPermission().equals("admin"))
-			model.addAttribute("loggedUser", loggedUser);
-		else
-			return "redirect:/main";
-		
-		List<Section> sections = sectionService.getAllSections();
-		model.addAttribute("sections", sections);
+	public String showAdmin(Model model) {
+		model.addAttribute("sections", sectionService.getAllSections());
 		model.addAttribute("section", new Section());
 		model.addAttribute("tag", new Tag());
 		
@@ -63,12 +48,7 @@ public class AdminController {
 	
 	@RequestMapping(value = "/admin/addSection", method = RequestMethod.POST)
 	public String addSection(@Valid Section section, BindingResult bindingResult,
-			RedirectAttributes redir, HttpSession session) {
-		
-		User loggedUser = sessionService.getLoggedUser(session);
-		if (loggedUser == null || !loggedUser.getPermission().equals("admin"))
-			return "redirect:/main";
-		
+			RedirectAttributes redir) {
 		if (bindingResult.hasErrors()) {
 			redir.addFlashAttribute("sectionError", bindingResult.getFieldError("name").getDefaultMessage());
 			return "redirect:/admin";
@@ -85,12 +65,7 @@ public class AdminController {
 	
 	@RequestMapping(value = "/admin/addTag", method = RequestMethod.POST)
 	public String addTag(@Valid Tag tag, BindingResult bindingResult,
-			RedirectAttributes redir, HttpSession session) {
-		
-		User loggedUser = sessionService.getLoggedUser(session);
-		if (loggedUser == null || !loggedUser.getPermission().equals("admin"))
-			return "redirect:/main";
-		
+			RedirectAttributes redir) {
 		if (bindingResult.hasErrors()) {
 			redir.addFlashAttribute("tagError", bindingResult.getFieldError("name").getDefaultMessage());
 			return "redirect:/admin";
