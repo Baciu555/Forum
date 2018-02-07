@@ -32,7 +32,7 @@ public class UserService {
 
 	private final Path UPLOADED_FOLDER = Paths.get("uploads");
 	private final String DEFAULT_AVATAR_NAME = "default-avatar.jpg";
-	private final String DEFAULT_ROLE = "ROLE_USER";
+	private final Long DEFAULT_ROLE = 1l;
 	private final Integer DEFAULT_BAN_COUNT = 0;
 	
 	@Autowired
@@ -91,7 +91,7 @@ public class UserService {
 		user.setAvatarPath(DEFAULT_AVATAR_NAME);
 		
 		Role role = new Role();
-		role.setName(DEFAULT_ROLE);
+		role.setId(DEFAULT_ROLE);
 		Set<Role> roles = new HashSet<>(0);
 		roles.add(role);
 		

@@ -40,7 +40,7 @@
 					<li sec:authorize="hasRole('ROLE_ADMIN')"><a href="/admin">Admin</a></li>
 					<li sec:authorize="!isAuthenticated()"><a href="/login">Zaloguj
 							sie</a></li>
-					<li sec:authorize="isAuthenticated()"><a sec:authentication="name" href="/account"></a></li>
+					<li sec:authorize="isAuthenticated()"><a sec:authentication="name" href="/user/account"></a></li>
 					<li sec:authorize="isAuthenticated()"><a href="/logout">Wyloguj sie</a></li>
 				</ul>
 			</div>
@@ -70,14 +70,8 @@
 										na forum?</p>
 								</div>
 
-								<div th:if="${#lists.isEmpty(session.userId)}" class="col-xs-12 col-sm-4 col-md-4">
-									<a th:href="@{'/login'}"><button
-											class="btn btn-default add-thread pull-right">Dodaj
-											wątek</button></a>
-								</div>
-								
-								<div th:if="${not #lists.isEmpty(session.userId)}" class="col-xs-12 col-sm-4 col-md-4">
-									<a th:href="@{'/addThread/' + ${section.id}}"><button
+								<div sec:authorize="isAuthenticated()" class="col-xs-12 col-sm-4 col-md-4">
+									<a th:href="@{'/user/addThread/' + ${section.id}}"><button
 											class="btn btn-default add-thread pull-right">Dodaj
 											wątek</button></a>
 								</div>

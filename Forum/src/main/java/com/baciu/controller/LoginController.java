@@ -40,20 +40,6 @@ public class LoginController {
 		return "login";
 	}
 
-	@RequestMapping(value = "login", method = RequestMethod.POST)
-	public String login(@ModelAttribute("user") User user, Model model) {
-//		try {
-//			loggedUser = userService.logIn(user.getUsername(), user.getPassword());
-//		} catch (UserNotExistsException e) {
-//			model.addAttribute("loginMsg", "Niepoprawny login lub haslo");
-//			return "login";
-//		} catch (AccountBannedException e) {
-//			model.addAttribute("loginMsg", e.getMessage());
-//			return "login";
-//		}
-		return "redirect:/main";
-	}
-
 	@RequestMapping(value = "register", method = RequestMethod.POST)
 	public String register(@Valid User user, BindingResult bindingResult,
 			@RequestParam("passwordConf") String passwordConf, Model model) {

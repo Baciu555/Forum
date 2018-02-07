@@ -31,13 +31,10 @@ public class SectionController {
 
 	@RequestMapping(value = "section/{sectionId}", method = RequestMethod.GET)
 	public String showSection(@PathVariable("sectionId") long sectionId, Model model) {
-		CurrentUser currentUser = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		model.addAttribute("loggedUser", userService.getById(currentUser.getId()));
-		model.addAttribute("sections", sectionService.getAllSections());
-		
 		Section section = sectionService.getSectionById(sectionId);
 		if (section == null) return "redirect:/main";
 		model.addAttribute("section", section);
+		model.addAttribute("sections", sectionService.getAllSections());
 		model.addAttribute("threads", threadService.getSectionThreads(sectionId, 1));
 		model.addAttribute("bestUsers", userService.getBestUsers());
 		model.addAttribute("pages", threadService.getSectionPages(sectionId));
@@ -50,9 +47,6 @@ public class SectionController {
 	@RequestMapping(value = "section/{sectionId}/{page}", method = RequestMethod.GET)
 	public String showSectionById(@PathVariable("sectionId") long sectionId, 
 			@PathVariable("page") int page, Model model) {
-		CurrentUser currentUser = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		model.addAttribute("loggedUser", userService.getById(currentUser.getId()));
-		model.addAttribute("sections", sectionService.getAllSections());
 		
 		Section section = sectionService.getSectionById(sectionId);
 		if (section == null) return "redirect:/main";
@@ -63,6 +57,7 @@ public class SectionController {
 		model.addAttribute("threads", threads);
 		model.addAttribute("pages", threadService.getSectionPages(sectionId));
 		model.addAttribute("currentPage", page);
+		model.addAttribute("sections", sectionService.getAllSections());
 		
 		return "section";
 	}

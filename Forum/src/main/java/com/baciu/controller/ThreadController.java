@@ -46,10 +46,6 @@ public class ThreadController {
 
 	@RequestMapping(value = "thread/{id}", method = RequestMethod.GET)
 	public String showThread(Model model, @PathVariable("id") long threadId) {
-		CurrentUser currentUser = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		model.addAttribute("loggedUser", userService.getById(currentUser.getId()));
-		model.addAttribute("sections", sectionService.getAllSections());
-		
 		Thread thread = threadService.getThreadById(threadId);
 		if (thread == null) return "redirect:/main";
 		model.addAttribute("thread", thread);
@@ -58,11 +54,12 @@ public class ThreadController {
 		Comment comment = new Comment();
 		model.addAttribute("comment", comment);
 		model.addAttribute("bestUsers", userService.getBestUsers());
+		model.addAttribute("sections", sectionService.getAllSections());
 			
 		return "thread";
 	}
 	
-	@RequestMapping(value = "thread/{threadId}", method = RequestMethod.POST)
+	@RequestMapping(value = "user/thread/{threadId}", method = RequestMethod.POST)
 	public String addComment(@Valid Comment comment, BindingResult bindingResult, 
 			@PathVariable("threadId") long threadId, RedirectAttributes redir) {
 		if (bindingResult.hasErrors()) {
@@ -76,17 +73,15 @@ public class ThreadController {
 		return "redirect:/thread/" + threadId;
 	}
 	
-	@RequestMapping(value = "addThread/{sectionId}", method=RequestMethod.GET)
+	@RequestMapping(value = "user/addThread/{sectionId}", method=RequestMethod.GET)
 	public String showAddThread(Model model, @PathVariable("sectionId") long sectionId) {
-		CurrentUser currentUser = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		model.addAttribute("loggedUser", userService.getById(currentUser.getId()));
 		model.addAttribute("tags", tagService.getAllTags());
 		model.addAttribute("thread", new Thread());
 		
 		return "add_thread";
 	}
 	
-	@RequestMapping(value = "addThread/{sectionId}", method = RequestMethod.POST)
+	@RequestMapping(value = "user/addThread/{sectionId}", method = RequestMethod.POST)
 	public String addThread(@Valid Thread thread, BindingResult bindingResult,
 			@PathVariable("sectionId") long sectionId,
 			@RequestParam(value = "tagsId", required = false) List<String> tagsId,

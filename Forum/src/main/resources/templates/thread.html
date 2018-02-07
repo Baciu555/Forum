@@ -40,7 +40,7 @@
 					<li sec:authorize="hasRole('ROLE_ADMIN')"><a href="/admin">Admin</a></li>
 					<li sec:authorize="!isAuthenticated()"><a href="/login">Zaloguj
 							sie</a></li>
-					<li sec:authorize="isAuthenticated()"><a sec:authentication="name" href="/account"></a></li>
+					<li sec:authorize="isAuthenticated()"><a sec:authentication="name" href="/user/account"></a></li>
 					<li sec:authorize="isAuthenticated()"><a href="/logout">Wyloguj sie</a></li>
 				</ul>
 			</div>
@@ -84,9 +84,9 @@
 										<span th:text="${tag.name}"></span>
 									</button></a>
 							</div>			
-							<div th:if="${not #lists.isEmpty(loggedUser)}" class="col-xs-12 col-sm-12 col-md-12">
+							<div sec:authorize="hasRole('ROLE_ADMIN')" class="col-xs-12 col-sm-12 col-md-12">
 							<hr/>
-							<a th:if="${loggedUser.permission == 'admin'}" th:href="@{'/thread/delete/' + ${thread.id}}" id="delete-thread">
+							<a th:href="@{'admin/thread/delete/' + ${thread.id}}" id="delete-thread">
 								<button type="button" data-toggle="modal"
 									data-target="#deleteThreadModal"
 									class="btn btn-danger">Usuń wątek</button></a>
@@ -118,9 +118,9 @@
 									<div class="col-xs-12 col-sm-12 col-md-12">
 										<p th:text="${comment.content}" class="thread-preview"></p>
 									</div>
-									<div th:if="${not #lists.isEmpty(loggedUser)}" class="col-xs-12 col-sm-12 col-md-12">
+									<div sec:authorize="hasRole('ROLE_ADMIN')" class="col-xs-12 col-sm-12 col-md-12">
 									<hr/>
-										<a th:if="${loggedUser.permission == 'admin'}" th:href="@{'/comment/delete/' + ${comment.id}}"
+										<a th:href="@{'admin/comment/delete/' + ${comment.id}}"
 											class="delete-comment"><button type="button"
 												class="btn btn-danger" data-toggle="modal"
 												data-target="#deleteCommentModal">Usuń komentarz</button></a>
@@ -130,17 +130,11 @@
 						</ul>
 					</div>
 				</div>
-				<div th:if="${not #lists.isEmpty(session.userId)}"
+				<div sec:authorize="isAuthenticated()"
 					class="panel panel-default">
 					<div class="panel-body">
-						<form th:action="@{'/thread/' + ${thread.id}}"
+						<form th:action="@{'/user/thread/' + ${thread.id}}"
 							th:object="${comment}" method="post">
-							<div class="form-group">
-								<label for="login">Login:</label> <input type="text"
-									class="form-control" th:value="${loggedUser.username}"
-									disabled="disabled" />
-							</div>
-
 							<div class="form-group">
 								<label for="comment-content">Tresc</label>
 								<textarea th:field="*{content}" type="text" class="form-control"></textarea>
@@ -148,13 +142,12 @@
 								<p th:text="${contentMessage}" class="bg-danger"></p>
 							</div>
 
-
 							<button type="submit" id="add-comment-btn"
 								class="btn btn-default">Skomentuj</button>
 						</form>
 					</div>
 				</div>
-				<div th:if="${#lists.isEmpty(session.userId)}">
+				<div sec:authorize="!isAuthenticated()">
 					<p class="title">
 						Aby dodać komentarz musisz się <a href="/login">zalogować</a>
 					</p>

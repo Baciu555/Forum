@@ -28,7 +28,7 @@ public class AccountController {
 	@Autowired
 	private UserService userService;
 
-	@RequestMapping(value = "account")
+	@RequestMapping(value = "user/account", method = RequestMethod.GET)
 	public String account(Model model) {
 		CurrentUser currentUser = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		model.addAttribute("loggedUser", userService.getById(currentUser.getId()));
@@ -37,7 +37,7 @@ public class AccountController {
 		return "account";
 	}
 
-	@RequestMapping(value = "edit", method = RequestMethod.GET)
+	@RequestMapping(value = "user/edit", method = RequestMethod.GET)
 	public String show(Model model) {
 		CurrentUser currentUser = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		model.addAttribute("loggedUser", userService.getById(currentUser.getId()));
@@ -46,7 +46,7 @@ public class AccountController {
 		return "edit";
 	}
 
-	@RequestMapping(value = "edit", method = RequestMethod.POST)
+	@RequestMapping(value = "user/edit", method = RequestMethod.POST)
 	public String update(@Valid User user, BindingResult bindingResult,
 			@RequestParam("passwordConfirm") String passwordConfirm, @RequestParam("file") MultipartFile file,
 			RedirectAttributes redirectAttributes) {
