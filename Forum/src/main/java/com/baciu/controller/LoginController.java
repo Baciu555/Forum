@@ -3,7 +3,6 @@ package com.baciu.controller;
 import java.util.InputMismatchException;
 import java.util.List;
 
-import javax.persistence.NoResultException;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -18,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.baciu.entity.Section;
 import com.baciu.entity.User;
+import com.baciu.exception.AccountBannedException;
 import com.baciu.exception.EmailExistsException;
+import com.baciu.exception.UserNotExistsException;
 import com.baciu.exception.UsernameExistsException;
 import com.baciu.service.SectionService;
 import com.baciu.service.SessionService;
@@ -52,13 +53,14 @@ public class LoginController {
 	@RequestMapping(value = "login", method = RequestMethod.POST)
 	public String login(@ModelAttribute("user") User user, HttpSession session, Model model) {
 		User loggedUser = new User();
+		System.out.println(user);
 
 		try {
 			loggedUser = userService.logIn(user.getUsername(), user.getPassword());
-		} catch (NoResultException e) {
+		} catch (UserNotExistsException e) {
 			model.addAttribute("loginMsg", "Niepoprawny login lub haslo");
 			return "login";
-		} catch (Exception e) {
+		} catch (AccountBannedException e) {
 			model.addAttribute("loginMsg", e.getMessage());
 			return "login";
 		}

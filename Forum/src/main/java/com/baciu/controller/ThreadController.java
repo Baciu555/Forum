@@ -1,4 +1,4 @@
-package com.baciu.controller;
+	package com.baciu.controller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -142,40 +142,6 @@ public class ThreadController {
 		threadService.addThread(thread, tagsId, sectionId);
 		
 		return "redirect:/section/" + sectionId;
-	}
-	
-	@RequestMapping(value = "thread/delete/{threadId}", method = RequestMethod.POST)
-	@ResponseBody
-	public ResponseEntity<String> deleteThread(@PathVariable("threadId") long threadId, @RequestBody String message,
-			HttpSession session, Errors errors) {
-		
-		User loggedUser = sessionService.getLoggedUser(session);
-		if (loggedUser == null || !loggedUser.getPermission().equals("admin"))
-			return new ResponseEntity<String>("ERROR", HttpStatus.BAD_REQUEST);
-		
-		if (errors.hasErrors()) {
-			return new ResponseEntity<String>("ERROR", HttpStatus.BAD_REQUEST);
-		}
-		
-		threadService.deleteThread(threadId);
-		return new ResponseEntity<String>("DONE", HttpStatus.OK);
-	}
-	
-	@RequestMapping(value = "comment/delete/{commentId}", method = RequestMethod.POST)
-	@ResponseBody
-	public ResponseEntity<String> deleteComment(@PathVariable("commentId") long commentId, @RequestBody String message,
-			HttpSession session, Errors errors) {
-		
-		User loggedUser = sessionService.getLoggedUser(session);
-		if (loggedUser == null || !loggedUser.getPermission().equals("admin"))
-			return new ResponseEntity<String>("ERROR", HttpStatus.BAD_REQUEST);
-		
-		if (errors.hasErrors()) {
-			return new ResponseEntity<String>("ERROR", HttpStatus.BAD_REQUEST);
-		}
-		
-		commentService.deleteComment(commentId);
-		return new ResponseEntity<String>("DONE", HttpStatus.OK);
 	}
 	
 }

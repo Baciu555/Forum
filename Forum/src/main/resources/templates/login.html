@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
 	<meta charset="UTF-8"/>
 	<title>Forum</title>
@@ -51,6 +51,16 @@
 	<main>
 	<div class="container">
 		<h1 class="title">Zaloguj sie</h1>
+		
+		<div sec:authorize="isAuthenticated()">
+  			This content is only shown to authenticated users.
+		</div>
+		<div sec:authorize="hasRole('ROLE_ADMIN')">
+ 			 This content is only shown to administrators.
+		</div>
+		<div sec:authorize="hasRole('ROLE_USER')">
+ 			 This content is only shown to users.
+		</div>
 		
 		<div class="row">
 			<div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-10 col-xs-offset-1">

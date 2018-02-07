@@ -10,11 +10,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.baciu.entity.Section;
-import com.baciu.entity.Thread;
 import com.baciu.entity.User;
 import com.baciu.service.SectionService;
 import com.baciu.service.SessionService;
-import com.baciu.service.ThreadService;
 import com.baciu.service.UserService;
 
 @Controller
@@ -22,9 +20,6 @@ public class MainController {
 	
 	@Autowired
 	private SectionService sectionService;
-	
-	@Autowired
-	private ThreadService threadService;
 	
 	@Autowired
 	private SessionService sessionService;
@@ -40,10 +35,6 @@ public class MainController {
 		
 		List<Section> sections = sectionService.getAllSections();
 		model.addAttribute("sections", sections);
-//		
-//		int threadsQuantity = 5;
-//		List<List<Thread>> sectionsThreads = threadService.getSectionsThreads(threadsQuantity);
-//		model.addAttribute("sectionsThreads", sectionsThreads);
 		
 		List<User> bestUsers = userService.getBestUsers();
 		model.addAttribute("bestUsers", bestUsers);

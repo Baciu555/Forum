@@ -27,7 +27,7 @@ function deleteThread(href) {
 	$.ajax({
 		type : "POST",
 		contentType : "application/json",
-		url : href,
+		url : "admin/" + href,
 		data : JSON.stringify(message),
 		dataType : 'json',
 		cache : false,
@@ -49,7 +49,7 @@ function deleteComment(href) {
 	$.ajax({
 		type : "POST",
 		contentType : "application/json",
-		url : href,
+		url : "admin/" + href,
 		data : JSON.stringify(message),
 		dataType : 'json',
 		cache : false,

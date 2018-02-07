@@ -9,13 +9,16 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.baciu.entity.Role;
 import com.baciu.entity.User;
 import com.baciu.exception.AccountBannedException;
 import com.baciu.exception.EmailExistsException;
@@ -29,7 +32,7 @@ public class UserService {
 
 	private final Path UPLOADED_FOLDER = Paths.get("uploads");
 	private final String DEFAULT_AVATAR_NAME = "default-avatar.jpg";
-	private final String DEFAULT_PERMISSION = "user";
+	private final String DEFAULT_ROLE = "ROLE_USER";
 	private final Integer DEFAULT_BAN_COUNT = 0;
 	
 	@Autowired
@@ -62,9 +65,11 @@ public class UserService {
 
 	public User getById(long userId) {
 		User user = userRepository.findOne(userId);
-		
-		if (user == null) return null;
-		
+		return user;
+	}
+	
+	public User getByUsername(String username) {
+		User user = userRepository.findByUsername(username);
 		return user;
 	}
 
@@ -84,7 +89,13 @@ public class UserService {
 		}
 		
 		user.setAvatarPath(DEFAULT_AVATAR_NAME);
-		user.setPermission(DEFAULT_PERMISSION);
+		
+		Role role = new Role();
+		role.setName(DEFAULT_ROLE);
+		Set<Role> roles = new HashSet<>(0);
+		roles.add(role);
+		
+		user.setRoles(roles);
 		user.setBanCount(DEFAULT_BAN_COUNT);
 		user.setJoinDate(new Date());
 		

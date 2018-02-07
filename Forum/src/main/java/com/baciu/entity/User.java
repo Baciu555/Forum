@@ -11,6 +11,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -28,7 +31,7 @@ import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
-@EqualsAndHashCode(exclude = {"thread", "comment"})
+@EqualsAndHashCode(exclude = {"thread", "comment", "roles"})
 @Table(name = "users")
 public class User implements Serializable {
 	
@@ -57,9 +60,6 @@ public class User implements Serializable {
 	@Column(name = "join_date")
 	private Date joinDate;
 	
-	@Column(name = "permission")
-	private String permission;
-	
 	@Column(name = "avatar_path")
 	private String avatarPath;
 	
@@ -78,5 +78,11 @@ public class User implements Serializable {
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private Set<Comment> comment = new HashSet<Comment>(0);
+	
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "user_role", joinColumns = {
+			@JoinColumn(name = "user_id")},
+			inverseJoinColumns = {@JoinColumn(name = "role_id")})
+	private Set<Role> roles = new HashSet<>(0);
 
 }
