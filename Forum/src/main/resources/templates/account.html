@@ -62,7 +62,9 @@
 					<div id="login" class="center"><p>Login: <span th:text="${loggedUser.username}"></span></p></div>
 					<div id="email"><p>Email: <span th:text="${loggedUser.email}"></span></p></div>
 					<div id="join-date"><p>Data Dołączenia: <span th:text="${#dates.format(loggedUser.joinDate, 'yyyy-MM-dd HH:mm')}"></span></p></div>
-					<span><a th:href="@{'/user/edit'}">[Edytuj  Dane]</a></span>
+					<span><a th:href="@{'/user/editData'}">[Edytuj  Dane]</a></span>
+					<span><a th:href="@{'/user/editPassword'}">[Zmień hasło]</a></span>
+					<span><a th:href="@{'/user/editAvatar'}">[Zmień avatar]</a></span>
 				</div>
 			</div>
 

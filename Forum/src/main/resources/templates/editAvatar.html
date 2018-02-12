@@ -55,35 +55,12 @@
 			<div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-10 col-xs-offset-1">
 				<div class="panel panel-default">
 					<div class="panel-body">
-						<form th:action="@{'user/edit'}" th:object="${loggedUser}" enctype="multipart/form-data" method="post">
+						<form th:action="@{'/user/editAvatar'}" enctype="multipart/form-data" method="post">
 
 							<div class="form-group">
-								<label for="login">Login:</label>
-								<input th:field="*{username}" type="text" class="form-control" id="register-login"/>
+								<label for="login">Obrazek:</label>
+								<input type="file" class="form-control" name="file" id="file"/>
 								<p class="bg-danger" th:text="${username}"></p>
-							</div>
-
-							<div class="form-group">
-								<label for="avatar">Avatar:</label>
-								<input name="file" type="file" class="form-control" id="avatar"/>
-								<p class="bg-danger" th:text="${fileErrorMsg}"></p>
-							</div>
-							
-							<div class="form-group">
-								<label for="password">Nowe hasło:</label>
-								<input th:field="*{password}" type="password" class="form-control" id="password"/>
-								<p class="bg-danger" th:text="${password}"></p>
-							</div>
-							
-							<div class="form-group">
-								<label for="password-confirm">Powtórz hasło:</label>
-								<input name="passwordConfirm" type="password" class="form-control" id="password-confirm"/>
-							</div>
-
-							<div class="form-group">
-								<label for="email">Email:</label>
-								<input th:field="*{email}" type="email" class="form-control" id="email"/>
-								<p class="bg-danger" th:text="${email}"></p>
 							</div>
 
 							<button type="submit" class="btn btn-default" id="register-submit">Wyślij</button>

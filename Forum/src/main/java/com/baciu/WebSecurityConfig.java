@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.baciu.service.CustomDetailsService;
 
@@ -19,8 +20,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private CustomDetailsService customDetailsService;
 	
 	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(customDetailsService);
+		auth.userDetailsService(customDetailsService).passwordEncoder(passwordEncoder);
 	}
 	
 	@Override
@@ -37,7 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.logoutUrl("/logout")
 			.logoutSuccessUrl("/main")
 		.and()
-			.csrf();
+			.csrf().disable();
 	}
 
 }

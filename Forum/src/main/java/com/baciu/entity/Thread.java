@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -70,7 +71,7 @@ public class Thread implements Serializable {
 			nullable = false, updatable = false)})
 	private Set<Tag> tags = new HashSet<Tag>(0);
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "thread")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "thread", cascade = CascadeType.ALL)
 	private Set<Comment> comments = new HashSet<Comment>(0);
 
 }

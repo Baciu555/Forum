@@ -29,7 +29,7 @@ import com.baciu.service.UserService;
 @Controller
 public class ThreadController {
 	
-	@Autowired
+	@Autowired	
 	private CommentService commentService;
 	
 	@Autowired

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
 <meta charset="UTF-8" />
 <title>Forum</title>
@@ -40,11 +41,13 @@
 					<li sec:authorize="hasRole('ROLE_ADMIN')"><a href="/admin">Admin</a></li>
 					<li sec:authorize="!isAuthenticated()"><a href="/login">Zaloguj
 							sie</a></li>
-					<li sec:authorize="isAuthenticated()"><a sec:authentication="name" href="/user/account"></a></li>
-					<li sec:authorize="isAuthenticated()"><a href="/logout">Wyloguj sie</a></li>
+					<li sec:authorize="isAuthenticated()"><a
+						sec:authentication="name" href="/user/account"></a></li>
+					<li sec:authorize="isAuthenticated()"><a href="/logout">Wyloguj
+							sie</a></li>
 				</ul>
 			</div>
-			<!-- /.navbar-collapse -->	
+			<!-- /.navbar-collapse -->
 		</div>
 		<!-- /.container-fluid -->
 	</nav>
@@ -60,7 +63,8 @@
 					<div class="panel-body">
 						<div class="row">
 							<div class="col-xs-12 col-sm-6 col-md-6">
-								<span class="thread-name">Autor: <a th:href="@{'/profile/' + ${thread.user.id}}"><span
+								<span class="thread-name">Autor: <a
+									th:href="@{'/profile/' + ${thread.user.id}}"><span
 										th:text="${thread.user.username}"></span></a></span>
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-6">
@@ -83,19 +87,26 @@
 										class="btn btn-info tag">
 										<span th:text="${tag.name}"></span>
 									</button></a>
-							</div>			
-							<div sec:authorize="hasRole('ROLE_ADMIN')" class="col-xs-12 col-sm-12 col-md-12">
-							<hr/>
-							<a th:href="@{'admin/thread/delete/' + ${thread.id}}" id="delete-thread">
-								<button type="button" data-toggle="modal"
-									data-target="#deleteThreadModal"
-									class="btn btn-danger">Usuń wątek</button></a>
+							</div>
+							<div sec:authorize="hasRole('ROLE_ADMIN')"
+								class="col-xs-12 col-sm-12 col-md-12">
+								<hr />
+								<form th:action="@{'/admin/thread/delete/' + ${thread.id}}"
+									method="post" id="deleteThreadForm">
+									<a>
+										<button type="submit" class="btn btn-danger">Usuń
+											wątek</button>
+									</a>
+									<p class="bg-danger" th:text="${deleteThreadMsg}"></p>
+
+								</form>
 							</div>
 
 						</div>
 					</div>
 				</div>
 				<h3 class="title">Komentarze</h3>
+				<p class="bg-danger" th:text="${deleteCommentMsg}"></p>
 				<div class="panel panel-default">
 					<div class="panel-body">
 						<ul class="list-group">
@@ -118,20 +129,21 @@
 									<div class="col-xs-12 col-sm-12 col-md-12">
 										<p th:text="${comment.content}" class="thread-preview"></p>
 									</div>
-									<div sec:authorize="hasRole('ROLE_ADMIN')" class="col-xs-12 col-sm-12 col-md-12">
-									<hr/>
-										<a th:href="@{'admin/comment/delete/' + ${comment.id}}"
-											class="delete-comment"><button type="button"
-												class="btn btn-danger" data-toggle="modal"
-												data-target="#deleteCommentModal">Usuń komentarz</button></a>
+									<div sec:authorize="hasRole('ROLE_ADMIN')"
+										class="col-xs-12 col-sm-12 col-md-12">
+										<hr />
+										<form th:action="@{'/admin/comment/delete/' + ${comment.id}}"
+											method="post">
+											<a><button type="submit" class="btn btn-danger">Usuń
+													komentarz</button></a>
+										</form>
 									</div>
 								</div>
 							</li>
 						</ul>
 					</div>
 				</div>
-				<div sec:authorize="isAuthenticated()"
-					class="panel panel-default">
+				<div sec:authorize="isAuthenticated()" class="panel panel-default">
 					<div class="panel-body">
 						<form th:action="@{'/user/thread/' + ${thread.id}}"
 							th:object="${comment}" method="post">
@@ -162,7 +174,9 @@
 							<li class="list-group-item">
 								<div class="row">
 									<div class="col-xs-4 col-sm-4 col-md-4">
-										<div class="thread-name"><b>Nazwa</b></div>
+										<div class="thread-name">
+											<b>Nazwa</b>
+										</div>
 									</div>
 									<div class="col-xs-2 col-sm-2 col-md-2">
 										<span class="span12 text-center"></span>
@@ -176,7 +190,8 @@
 								<div class="row">
 									<div class="col-xs-4 col-sm-4 col-md-4">
 										<div class="thread-name">
-											<a th:href="@{'/profile/' + ${bestUser.id}}" th:text="${bestUser.username}"></a>
+											<a th:href="@{'/profile/' + ${bestUser.id}}"
+												th:text="${bestUser.username}"></a>
 										</div>
 									</div>
 									<div class="col-xs-4 col-sm-4 col-md-4">

@@ -88,7 +88,7 @@
 							class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-10 col-xs-offset-1">
 							<div class="panel panel-default">
 								<div class="panel-body">
-									<form th:action="@{'admin/profile/' + ${user.id}}" method="post">
+									<form th:action="@{'/admin/profile/' + ${user.id}}" method="post">
 										<div class="form-group">
 											<label for="date">Wybierz date wygasniecia bana:</label>
 											<input name="date" type="date" class="form-control" />

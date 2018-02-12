@@ -6,7 +6,6 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -15,15 +14,16 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.baciu.entity.CurrentUser;
 import com.baciu.entity.Role;
 import com.baciu.entity.User;
-import com.baciu.exception.AccountBannedException;
 import com.baciu.exception.EmailExistsException;
 import com.baciu.exception.FileUploadException;
-import com.baciu.exception.UserNotExistsException;
 import com.baciu.exception.UsernameExistsException;
 import com.baciu.repository.UserRepository;
 
@@ -37,31 +37,34 @@ public class UserService {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
-	public User logIn(String username, String password) throws UserNotExistsException, AccountBannedException {
-		User user = userRepository.findByUsernameAndPassword(username, password);
-		
-		if (user == null)
-			throw new UserNotExistsException();
-		
-		
-		if (user.getBanCount() >= 3)
-			throw new AccountBannedException("Konto zbanowane na zawsze");
-		
-		Date currentDate = new Date();
-		if (user.getBanExpire() != null && user.getBanExpire().after(currentDate)) {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			String msg = "Konto zbanowane do : " + sdf.format(user.getBanExpire());
-			throw new AccountBannedException(msg);
-		}
-		
-		if (user.getBanExpire() != null && !user.getBanExpire().after(currentDate)) {
-			user.setBanExpire(null);
-			user = userRepository.save(user);
-		}
-		
-		return user;
-	}
+//	public User logIn(String username, String password) throws UserNotExistsException, AccountBannedException {
+//		User user = userRepository.findByUsernameAndPassword(username, password);
+//		
+//		if (user == null)
+//			throw new UserNotExistsException();
+//		
+//		
+//		if (user.getBanCount() >= 3)
+//			throw new AccountBannedException("Konto zbanowane na zawsze");
+//		
+//		Date currentDate = new Date();
+//		if (user.getBanExpire() != null && user.getBanExpire().after(currentDate)) {
+//			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//			String msg = "Konto zbanowane do : " + sdf.format(user.getBanExpire());
+//			throw new AccountBannedException(msg);
+//		}
+//		
+//		if (user.getBanExpire() != null && !user.getBanExpire().after(currentDate)) {
+//			user.setBanExpire(null);
+//			user = userRepository.save(user);
+//		}
+//		
+//		return user;
+//	}
 
 	public User getById(long userId) {
 		User user = userRepository.findOne(userId);
@@ -88,6 +91,7 @@ public class UserService {
 			throw new EmailExistsException("Email zajęty");
 		}
 		
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		user.setAvatarPath(DEFAULT_AVATAR_NAME);
 		
 		Role role = new Role();
@@ -102,29 +106,49 @@ public class UserService {
 		userRepository.save(user);
 	}
 
-	public void update(User user, String passwordConfirm, MultipartFile file) throws FileUploadException, Exception {
-		if (!passwordConfirm.equals(user.getPassword()))
-			throw new Exception("Hasła nie są zgodne");
-
-		User usr = getById(user.getId());
+	public void updateData(User user) throws Exception {
+		User usr = userRepository.findOne(user.getId());
+		if (userRepository.findByEmail(user.getEmail()) != null && !usr.getEmail().equals(user.getEmail()))
+			throw new Exception("email zajęty");
 		
-		if (file.isEmpty()) {
-			user.setAvatarPath(usr.getAvatarPath());
+		if (userRepository.findByUsername(user.getUsername()) != null && !usr.getUsername().equals(user.getUsername()))
+			throw new Exception("nazwa zajęta");
+		
+		usr.setUsername(user.getUsername());
+		usr.setEmail(user.getEmail());
+		
+		userRepository.save(usr);
+	}
+	
+	public void updatePassword(String password, String passwordConfirm) throws Exception {
+		if (password.length() < 1 || password.length() > 250)
+			throw new Exception("Długość hasła powinna mieścic się w granicach 1 - 250 znaków");
+			
+		if (!password.equals(passwordConfirm)) {
+			throw new Exception("Hasła nie są zgodne");
 		}
+		
+		CurrentUser currentUser = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User user = userRepository.findOne(currentUser.getId());
+		user.setPassword(password);
+		userRepository.save(user);
+	}
+	
+	public void updateAvatar(MultipartFile file) throws Exception {
+		if (file.isEmpty())
+			throw new FileUploadException("plik pusty");
+		
+		CurrentUser currentUser = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User user = userRepository.findOne(currentUser.getId());
 
-		if (!file.isEmpty() && !usr.getAvatarPath().equals(file.getOriginalFilename())) {
+		if (!user.getAvatarPath().equals(file.getOriginalFilename())) {
 			uploadAvatar(file);
 			
-			if (!usr.getAvatarPath().equals(DEFAULT_AVATAR_NAME))
-				deleteAvatarFile(usr.getAvatarPath());
+			if (!user.getAvatarPath().equals(DEFAULT_AVATAR_NAME))
+				deleteAvatarFile(user.getAvatarPath());
 		}
-
-		user.setAvatarPath(file.getOriginalFilename());
-		user.setUsername(usr.getUsername());
-		user.setPassword(usr.getPassword());
-		user.setEmail(usr.getEmail());
-		user.setBanExpire(usr.getBanExpire());
 		
+		user.setAvatarPath(file.getOriginalFilename());
 		userRepository.save(user);
 	}
 

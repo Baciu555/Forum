@@ -37,40 +37,79 @@ public class AccountController {
 		return "account";
 	}
 
-	@RequestMapping(value = "user/edit", method = RequestMethod.GET)
-	public String show(Model model) {
+	@RequestMapping(value = "user/editData", method = RequestMethod.GET)
+	public String showEditData(Model model) {
 		CurrentUser currentUser = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		model.addAttribute("loggedUser", userService.getById(currentUser.getId()));
 		model.addAttribute("sections", sectionService.getAllSections());
 
-		return "edit";
+		return "editData";
+	}
+	
+	@RequestMapping(value = "user/editPassword", method = RequestMethod.GET)
+	public String showEditPassword(Model model) {
+		CurrentUser currentUser = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		model.addAttribute("loggedUser", userService.getById(currentUser.getId()));
+		model.addAttribute("sections", sectionService.getAllSections());
+
+		return "editPassword";
+	}
+	
+	@RequestMapping(value = "user/editAvatar", method = RequestMethod.GET)
+	public String showEditAvatar(Model model) {
+		CurrentUser currentUser = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		model.addAttribute("loggedUser", userService.getById(currentUser.getId()));
+		model.addAttribute("sections", sectionService.getAllSections());
+
+		return "editAvatar";
 	}
 
-	@RequestMapping(value = "user/edit", method = RequestMethod.POST)
-	public String update(@Valid User user, BindingResult bindingResult,
-			@RequestParam("passwordConfirm") String passwordConfirm, @RequestParam("file") MultipartFile file,
-			RedirectAttributes redirectAttributes) {
-		CurrentUser currentUser = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		
+	@RequestMapping(value = "user/editData", method = RequestMethod.POST)
+	public String updateData(@Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 		if (bindingResult.hasErrors()) {
 			redirectAttributes.addFlashAttribute(bindingResult.getFieldError().getField(), bindingResult.getFieldError().getDefaultMessage());
-			return "redirect:/edit";
+			return "redirect:/user/editData";
 		}
 		
+		CurrentUser currentUser = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		user.setId(currentUser.getId());
 
 		try {
-			userService.update(user, passwordConfirm, file);
-		} catch (FileUploadException e) {
-			redirectAttributes.addFlashAttribute("fileErrorMsg", e.getMessage());
-			return "redirect:/edit";
+			userService.updateData(user);
 		} catch (Exception e) {
 			redirectAttributes.addFlashAttribute("errorMsg", e.getMessage());
-			return "redirect:/edit";
+			return "redirect:/user/editData";
 		}
 
 		redirectAttributes.addFlashAttribute("msg", "Dane uzytkownika zmienione");
-		return "redirect:/edit";
+		return "redirect:/user/editData";
+	}
+	
+	@RequestMapping(value = "user/editPassword", method = RequestMethod.POST)
+	public String updatePassword(@RequestParam("password") String password, @RequestParam("passwordConfirm") String passwordConfirm,
+			RedirectAttributes redirectAttributes) {
+		try {
+			userService.updatePassword(password, passwordConfirm);
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("errorMsg", e.getMessage());
+			return "redirect:/user/editPassword";
+		}
+
+		redirectAttributes.addFlashAttribute("msg", "Hasło zmienione");
+		return "redirect:/user/editPassword";
+	}
+	
+	@RequestMapping(value = "user/editAvatar", method = RequestMethod.POST)
+	public String updateAvatar(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) throws Exception {
+		try {
+			userService.updateAvatar(file);
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("fileErrorMsg", e.getMessage());
+			return "redirect:/user/editAvatar";
+		}
+
+		redirectAttributes.addFlashAttribute("msg", "Avatar zmieniony");
+		return "redirect:/user/editAvatar";
 	}
 
 }

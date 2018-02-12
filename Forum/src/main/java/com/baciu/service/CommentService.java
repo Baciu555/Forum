@@ -27,9 +27,10 @@ public class CommentService {
 		commentRepository.save(comment);
 	}
 	
-	public void deleteComment(long commentId) {
+	public Long deleteComment(long commentId) {
 		Comment comment = commentRepository.findOne(commentId);
 		commentRepository.delete(comment);
+		return comment.getThread().getId();
 	}
 
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.baciu.entity.Section;
 import com.baciu.entity.Tag;
 import com.baciu.entity.Thread;
+import com.baciu.exception.ThreadNotExistsException;
 import com.baciu.repository.ThreadRepository;
 
 @Service
@@ -65,13 +66,15 @@ public class ThreadService {
 	
 	public Thread getThreadById(long threadId) {
 		Thread thread = threadRepository.findOne(threadId);
-		
 		return thread;
 	}
 	
-	public void deleteThread(long threadId) {
+	public Long deleteThread(long threadId) throws ThreadNotExistsException {
 		Thread thread = threadRepository.findOne(threadId);
+		if (thread == null)
+			throw new ThreadNotExistsException("Problem przy usuwaniu wątku. Spróbuj ponownie");
 		threadRepository.delete(thread);
+		return thread.getSection().getId();
 	}
 
 }

@@ -17,6 +17,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.baciu.entity.Section;
 import com.baciu.entity.Tag;
+import com.baciu.exception.CommentNotFoundException;
+import com.baciu.exception.ThreadNotExistsException;
 import com.baciu.service.CommentService;
 import com.baciu.service.SectionService;
 import com.baciu.service.TagService;
@@ -81,17 +83,22 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value = "admin/thread/delete/{threadId}", method = RequestMethod.POST)
-	@ResponseBody
-	public ResponseEntity<String> deleteThread(@PathVariable("threadId") long threadId, @RequestBody String message) {
-		threadService.deleteThread(threadId);
-		return new ResponseEntity<String>("DONE", HttpStatus.OK);
+	public String deleteThread(@PathVariable("threadId") long threadId, RedirectAttributes redir) {
+		Long sectionId = null;
+		try {
+			sectionId = threadService.deleteThread(threadId);
+		} catch (ThreadNotExistsException e) {
+			redir.addFlashAttribute("deleteThreadMsg", e.getMessage());
+			return "redirect:/thread/" + threadId;
+		}
+		return "redirect:/section/" + sectionId;
 	}
 	
 	@RequestMapping(value = "admin/comment/delete/{commentId}", method = RequestMethod.POST)
-	@ResponseBody
-	public ResponseEntity<String> deleteComment(@PathVariable("commentId") long commentId, @RequestBody String message) {
-		commentService.deleteComment(commentId);
-		return new ResponseEntity<String>("DONE", HttpStatus.OK);
+	public String deleteComment(@PathVariable("commentId") long commentId, RedirectAttributes redir) {
+		Long threadId = commentService.deleteComment(commentId);
+		redir.addFlashAttribute("deleteCommentMsg", "komentarz usunięty");
+		return "redirect:/thread/" + threadId;
 	}
 
 }

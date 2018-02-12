@@ -9,11 +9,11 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,7 +34,9 @@ public class LoginController {
 	private UserService userService;
 
 	@RequestMapping(value = "login", method = RequestMethod.GET)
-	public String showLoginPage(Model model) {
+	public String showLoginPage(@RequestParam(value = "error", required = false) String error, Model model) {
+		if (error != null)
+			model.addAttribute("loginMsg", "Niepoprawny login lub hasło");
 		model.addAttribute("sections", sectionService.getAllSections());
 		model.addAttribute("user", new User());
 		return "login";
