@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.baciu.entity.Tag;
 import com.baciu.service.SectionService;
 import com.baciu.service.TagService;
+import com.baciu.service.UserService;
 
 @Controller
 public class TagController {
@@ -20,6 +21,9 @@ public class TagController {
 	@Autowired
 	private SectionService sectionService;
 	
+	@Autowired
+	private UserService userService;
+	
 	@RequestMapping(value = "tag/{tagId}", method = RequestMethod.GET)
 	public String showTag(@PathVariable("tagId") long tagId, Model model) {
 		Tag tag = tagService.getById(tagId);
@@ -27,6 +31,7 @@ public class TagController {
 		
 		model.addAttribute("tag", tag);
 		model.addAttribute("sections", sectionService.getAllSections());
+		model.addAttribute("bestUsers", userService.getBestUsers());
 		
 		return "tags";
 	}

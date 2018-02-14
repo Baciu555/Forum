@@ -21,6 +21,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -42,7 +43,8 @@ public class Thread implements Serializable {
 	
 	@Column(name = "subject")
 	@NotEmpty(message = "pole nie może zostac puste")
-	@NotNull
+	@NotNull(message = "pole nie może zostac puste")
+	@Size(min=0, max=255, message = "Długość tematu może maksymalnie wynosić 255 znaków")
 	private String subject;
 	
 	@Temporal(TemporalType.TIMESTAMP)
@@ -54,6 +56,7 @@ public class Thread implements Serializable {
 	
 	@Column(name = "content")
 	@NotEmpty(message = "pole nie może zostac puste")
+	@Size(min=0, max=255, message = "Długość wpisu może maksymalnie wynosić 255 znaków")
 	private String content;
 	
 	@ManyToOne(fetch = FetchType.LAZY)

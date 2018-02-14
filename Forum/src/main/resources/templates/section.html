@@ -63,14 +63,14 @@
 				<div class="panel panel-default">
 					<div class="panel-body">
 
-						<div class="well well-sm">
+						<div sec:authorize="isAuthenticated()" class="well well-sm">
 							<div class="row">
 								<div class="col-xs-12 col-sm-8 col-md-8">
 									<p id="thread-msg">Masz pytanie, a nie znalazłeś odpowiedzi
 										na forum?</p>
 								</div>
 
-								<div sec:authorize="isAuthenticated()" class="col-xs-12 col-sm-4 col-md-4">
+								<div  class="col-xs-12 col-sm-4 col-md-4">
 									<a th:href="@{'/user/addThread/' + ${section.id}}"><button
 											class="btn btn-default add-thread pull-right">Dodaj
 											wątek</button></a>

@@ -196,6 +196,10 @@ public class UserService {
 	}
 	
 	public List<User> getBestUsers() {
-		return userRepository.getBestUsers();
+		List<User> bestUsers = userRepository.getBestUsers();
+		if (bestUsers.size() < 5)
+			return bestUsers.subList(0, bestUsers.size());
+		
+		return bestUsers.subList(0, 5);
 	}
 }

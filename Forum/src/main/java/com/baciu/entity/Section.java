@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -33,6 +34,7 @@ public class Section implements Serializable {
 	
 	@Column(name = "name")
 	@NotBlank(message = "pole nie moze zostac puste")
+	@Size(min=0, max=255, message = "Długość nazwy sekcji może maksymalnie wynosić 255 znaków")
 	private String name;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "section")

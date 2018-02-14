@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import lombok.Data;
@@ -34,11 +35,11 @@ public class Comment implements Serializable {
 	private Long id;
 	
 	@NotEmpty(message = "pole nie może zostac puste")
-	@Column(name = "content")
+	@Column(name = "content", nullable = false)
 	private String content;
 	
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "entry_date")
+	@Column(name = "entry_date", nullable = false)
 	private Date entryDate;
 	
 	@Column(name = "points")

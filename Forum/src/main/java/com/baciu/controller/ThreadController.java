@@ -92,12 +92,12 @@ public class ThreadController {
 		
 		if (bindingResult.hasErrors()) {
 			redirectAttributes.addFlashAttribute(bindingResult.getFieldError().getField(), bindingResult.getFieldError().getDefaultMessage());
-			return "redirect:/addThread/" + sectionId;
+			return "redirect:/user/addThread/" + sectionId;
 		}
 			
 		if (tagsId == null) {
 			redirectAttributes.addFlashAttribute("tagsMessage", "Musisz wybrać przynajmniej 1 tag");
-			return "redirect:/addThread/" + sectionId;
+			return "redirect:/user/addThread/" + sectionId;
 		}
 		
 		Section section = new Section();

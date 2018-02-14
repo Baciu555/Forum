@@ -16,4 +16,7 @@ public interface ThreadRepository extends CrudRepository<Thread, Long> {
 	
 	@Query("select count(*) from Thread as thr where section.id = ?")
 	Long getSectionThreadsCount(long sectionId);
+	
+	List<Thread> findByContentContaining(String searchedText);
+	List<Thread> findBySubjectContaining(String searchedText);
 }

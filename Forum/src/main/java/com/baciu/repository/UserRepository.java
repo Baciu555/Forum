@@ -17,5 +17,4 @@ public interface UserRepository extends CrudRepository<User, Long> {
 	
 	@Query("FROM User as u ORDER BY u.commentsCount DESC")
 	List<User> getBestUsers();
-
 }

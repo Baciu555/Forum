@@ -26,8 +26,7 @@ public class ThreadService {
 		List<Thread> threads = threadRepository.getSectionThreads(sectionId);
 		if (threads.size() < maxResults)
 			threads = threads.subList(firstResult, threads.size());
-		else
-			threads = threads.subList(firstResult, maxResults);
+			
 		return threads;
 	}
 	
@@ -75,6 +74,18 @@ public class ThreadService {
 			throw new ThreadNotExistsException("Problem przy usuwaniu wątku. Spróbuj ponownie");
 		threadRepository.delete(thread);
 		return thread.getSection().getId();
+	}
+	
+	public List<Thread> getSearchedThreads(String searchedText) {
+		List<Thread> threadsByContent = threadRepository.findByContentContaining(searchedText);
+		List<Thread> threadsBySubject = threadRepository.findBySubjectContaining(searchedText);
+		
+		List<Thread> threads = threadsByContent;
+		for (Thread t : threadsBySubject)
+			if (!threads.contains(t))
+				threads.add(t);
+		
+		return threads;
 	}
 
 }

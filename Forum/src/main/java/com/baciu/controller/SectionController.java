@@ -48,16 +48,19 @@ public class SectionController {
 	public String showSectionById(@PathVariable("sectionId") long sectionId, 
 			@PathVariable("page") int page, Model model) {
 		
+		System.out.println("XDDDDDDDDDDDDD");
+		
 		Section section = sectionService.getSectionById(sectionId);
 		if (section == null) return "redirect:/main";
 		model.addAttribute("section", section);
 		
 		List<Thread> threads = threadService.getSectionThreads(sectionId, page);
-		if (threads.isEmpty()) return "redirect:/main";
+		if (threads == null) return "redirect:/main";
 		model.addAttribute("threads", threads);
 		model.addAttribute("pages", threadService.getSectionPages(sectionId));
 		model.addAttribute("currentPage", page);
 		model.addAttribute("sections", sectionService.getAllSections());
+		model.addAttribute("bestUsers", userService.getBestUsers());
 		
 		return "section";
 	}

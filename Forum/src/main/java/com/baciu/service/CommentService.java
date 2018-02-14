@@ -1,5 +1,7 @@
 package com.baciu.service;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,8 @@ public class CommentService {
 		Thread thread = new Thread();
 		thread.setId(threadId);
 		comment.setThread(thread);
+		
+		comment.setEntryDate(new Date());
 		
 		commentRepository.save(comment);
 	}

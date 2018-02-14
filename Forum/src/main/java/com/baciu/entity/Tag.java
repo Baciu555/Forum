@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -33,6 +34,7 @@ public class Tag implements Serializable {
 	
 	@Column(name = "name")
 	@NotBlank(message = "pole nie moze zostac puste")
+	@Size(min=0, max=255, message = "Długość nazwy tagu może maksymalnie wynosić 255 znaków")
 	private String name;
 	
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "tags")
