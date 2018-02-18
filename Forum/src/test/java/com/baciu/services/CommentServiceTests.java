@@ -1,18 +1,18 @@
-package com.baciu;
+package com.baciu.services;
 
 import javax.transaction.Transactional;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.baciu.DAO.CommentDAO;
 import com.baciu.entity.Comment;
+import com.baciu.repository.CommentRepository;
 import com.baciu.service.CommentService;
 
 
@@ -25,7 +25,7 @@ public class CommentServiceTests {
 	private CommentService commentService;
 	
 	@Autowired
-	private CommentDAO commentDAO;
+	private CommentRepository commentRepository;
 	
 	@Before
 	public void setUp() {}
@@ -41,7 +41,7 @@ public class CommentServiceTests {
 	public void testDeleteComment() {
 		Long commentId = new Long(1);
 		commentService.deleteComment(commentId);
-		Comment comment = commentDAO.getById(commentId);
+		Comment comment = commentRepository.findOne(commentId);
 		
 		Assert.assertNull("failure - expected null", comment);
 		

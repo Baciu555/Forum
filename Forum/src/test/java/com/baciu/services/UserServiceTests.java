@@ -1,4 +1,4 @@
-package com.baciu;
+package com.baciu.services;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -16,10 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.baciu.DAO.UserDAO;
 import com.baciu.entity.User;
 import com.baciu.exception.EmailExistsException;
 import com.baciu.exception.UsernameExistsException;
+import com.baciu.repository.UserRepository;
 import com.baciu.service.UserService;
 
 @RunWith(SpringRunner.class)
@@ -31,7 +31,7 @@ public class UserServiceTests {
 	private UserService userService;
 	
 	@Autowired
-	private UserDAO userDAO;
+	private UserRepository userRepository;
 	
 	@Before
 	public void setUp() {
@@ -85,28 +85,6 @@ public class UserServiceTests {
 	}
 	
 	@Test
-	public void testLogIn() {
-		Long userId = new Long(1);
-		String userName = "user";
-		String password = "haslo";
-		Exception exception = null;
-		User user = null;
-		
-		try {
-			user = userService.logIn(userName, password);
-		} catch (Exception e) {
-			exception = e;
-		}
-		
-		Assert.assertNull("failure - expected null", exception);
-		Assert.assertNotNull("failure - expected not null", user);
-		Assert.assertEquals("failure - expect equal values", userId, user.getId());
-		Assert.assertEquals("failure - expected equal values", userName, user.getUsername());
-		Assert.assertEquals("failure - expected equal values", password, user.getPassword());
-		
-	}
-	
-	@Test
 	public void testRegister() {
 		User user = new User();
 		user.setUsername("username123");
@@ -121,7 +99,7 @@ public class UserServiceTests {
 			exception = e;
 		}
 		
-		User newUser = userDAO.getByUsername(user.getUsername());
+		User newUser = userRepository.findByUsername(user.getUsername());
 		
 		Assert.assertEquals("failure - expected equal values", user.getUsername(), newUser.getUsername());
 		Assert.assertEquals("failure - expected equal values", user.getPassword(), newUser.getPassword());
