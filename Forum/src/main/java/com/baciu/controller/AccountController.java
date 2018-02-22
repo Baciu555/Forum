@@ -15,7 +15,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.baciu.entity.CurrentUser;
 import com.baciu.entity.User;
-import com.baciu.exception.FileUploadException;
 import com.baciu.service.SectionService;
 import com.baciu.service.UserService;
 
