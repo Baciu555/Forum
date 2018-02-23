@@ -17,6 +17,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -48,10 +49,10 @@ public class Thread implements Serializable {
 	private String subject;
 	
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "entry_date")
+	@Column(name = "entry_date", nullable = true)
 	private Date entryDate;
 	
-	@Column(name = "views_count", nullable = false)
+	@Column(name = "views_count", nullable = true)
 	private Long viewsCount;
 	
 	@Column(name = "content")
@@ -76,5 +77,11 @@ public class Thread implements Serializable {
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "thread", cascade = CascadeType.ALL)
 	private Set<Comment> comments = new HashSet<Comment>(0);
+	
+	@PrePersist
+	protected void onCreate() {
+		if (entryDate == null) entryDate = new Date();
+		if (viewsCount == null) viewsCount = 0L;
+	}
 
 }

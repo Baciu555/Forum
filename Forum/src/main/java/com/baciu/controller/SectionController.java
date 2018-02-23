@@ -44,10 +44,7 @@ public class SectionController {
 	
 	@RequestMapping(value = "section/{sectionId}/{page}", method = RequestMethod.GET)
 	public String showSectionById(@PathVariable("sectionId") long sectionId, 
-			@PathVariable("page") int page, Model model) {
-		
-		System.out.println("XDDDDDDDDDDDDD");
-		
+			@PathVariable("page") int page, Model model) {		
 		Section section = sectionService.getSectionById(sectionId);
 		if (section == null) return "redirect:/main";
 		model.addAttribute("section", section);

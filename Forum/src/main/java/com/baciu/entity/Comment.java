@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -38,11 +39,8 @@ public class Comment implements Serializable {
 	private String content;
 	
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "entry_date", nullable = false)
+	@Column(name = "entry_date")
 	private Date entryDate;
-	
-	@Column(name = "points")
-	private Integer points;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false)
@@ -51,5 +49,10 @@ public class Comment implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "thread_id", nullable = false)
 	private Thread thread;
+	
+	@PrePersist
+	protected void onCreate() {
+		if (entryDate == null) entryDate = new Date();
+	}
 	
 }

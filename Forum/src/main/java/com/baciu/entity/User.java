@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -84,5 +85,12 @@ public class User implements Serializable {
 			@JoinColumn(name = "user_id")},
 			inverseJoinColumns = {@JoinColumn(name = "role_id")})
 	private Set<Role> roles = new HashSet<>(0);
+	
+	@PrePersist
+	protected void onCreate() {
+		if (joinDate == null) joinDate = new Date();
+		if (avatarPath == null) avatarPath = "default-avatar.jpg";
+		if (banCount == null) banCount = 0;
+	}
 
 }

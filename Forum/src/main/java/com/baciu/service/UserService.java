@@ -8,10 +8,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.baciu.entity.CurrentUser;
-import com.baciu.entity.Role;
 import com.baciu.entity.User;
 import com.baciu.exception.EmailExistsException;
 import com.baciu.exception.FileUploadException;
@@ -32,8 +29,6 @@ public class UserService {
 
 	private final Path UPLOADED_FOLDER = Paths.get("uploads");
 	private final String DEFAULT_AVATAR_NAME = "default-avatar.jpg";
-	private final Long DEFAULT_ROLE = 1l;
-	private final Integer DEFAULT_BAN_COUNT = 0;
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -41,68 +36,27 @@ public class UserService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
-//	public User logIn(String username, String password) throws UserNotExistsException, AccountBannedException {
-//		User user = userRepository.findByUsernameAndPassword(username, password);
-//		
-//		if (user == null)
-//			throw new UserNotExistsException();
-//		
-//		
-//		if (user.getBanCount() >= 3)
-//			throw new AccountBannedException("Konto zbanowane na zawsze");
-//		
-//		Date currentDate = new Date();
-//		if (user.getBanExpire() != null && user.getBanExpire().after(currentDate)) {
-//			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//			String msg = "Konto zbanowane do : " + sdf.format(user.getBanExpire());
-//			throw new AccountBannedException(msg);
-//		}
-//		
-//		if (user.getBanExpire() != null && !user.getBanExpire().after(currentDate)) {
-//			user.setBanExpire(null);
-//			user = userRepository.save(user);
-//		}
-//		
-//		return user;
-//	}
-
 	public User getById(long userId) {
-		User user = userRepository.findOne(userId);
-		return user;
+		return  userRepository.findOne(userId);
 	}
 	
 	public User getByUsername(String username) {
-		User user = userRepository.findByUsername(username);
-		return user;
+		return  userRepository.findByUsername(username);
 	}
 
 	public void register(User user, String passwordConf)
 			throws InputMismatchException, EmailExistsException, UsernameExistsException {
 
-		if (userRepository.findByUsername(user.getUsername()) != null) {
+		if (userRepository.findByUsername(user.getUsername()) != null)
 			throw new UsernameExistsException("Nazwa zajęta");
-		}
 		
-		if (!user.getPassword().equals(passwordConf)) {
+		if (!user.getPassword().equals(passwordConf))
 			throw new InputMismatchException("Hasła nie są identyczne");
-		}
 
-		if (userRepository.findByEmail(user.getEmail()) != null) {
+		if (userRepository.findByEmail(user.getEmail()) != null)
 			throw new EmailExistsException("Email zajęty");
-		}
 		
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		user.setAvatarPath(DEFAULT_AVATAR_NAME);
-		
-		Role role = new Role();
-		role.setId(DEFAULT_ROLE);
-		Set<Role> roles = new HashSet<>(0);
-		roles.add(role);
-		
-		user.setRoles(roles);
-		user.setBanCount(DEFAULT_BAN_COUNT);
-		user.setJoinDate(new Date());
-		
 		userRepository.save(user);
 	}
 
@@ -190,7 +144,6 @@ public class UserService {
 			user.setBanCount(user.getBanCount() + 1);
 			userRepository.save(user);
 		} else {
-			System.out.println("Źle");
 			throw new Exception("Data musi poprzedziać dzien dzisiejszy");
 		}
 	}
