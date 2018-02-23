@@ -35,6 +35,7 @@
 								th:href="@{'/section/' + ${section.id}}"
 								th:text="${section.name}"></a></li>
 						</ul></li>
+						<li><a href="/search">Szukaj</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li sec:authorize="hasRole('ROLE_ADMIN')"><a href="/admin">Admin</a></li>
