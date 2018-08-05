@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry kind="src" path="Forum/src/main/java"/>
-	<classpathentry kind="src" path="Forum/src/test/java"/>
-	<classpathentry kind="lib" path="Forum/.mvn/wrapper/maven-wrapper.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="output" path="bin"/>
-</classpath>
