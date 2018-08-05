@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta charset="UTF-8" />
+<title>Forum</title>
+<link rel="stylesheet"
+	href="/css/bootstrap-3.3.7-dist/css/bootstrap.css" />
+<link rel="stylesheet" href="/css/bootstrap-3.3.7-dist/css/style.css" />
+</head>
+<body>
+
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+					aria-expanded="false">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/main">Forum</a>
+			</div>
+
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse"
+				id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown" role="button" aria-haspopup="true"
+						aria-expanded="false">Kategorie <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li th:each="section : ${sections}"><a
+								th:href="@{'/section/' + ${section.id}}"
+								th:text="${section.name}"></a></li>
+						</ul></li>
+						<li><a href="/search">Szukaj</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li sec:authorize="hasRole('ROLE_ADMIN')"><a href="/admin">Admin</a></li>
+					<li sec:authorize="!isAuthenticated()"><a href="/login">Zaloguj
+							sie</a></li>
+					<li sec:authorize="isAuthenticated()"><a sec:authentication="name" href="/user/account"></a></li>
+					<li sec:authorize="isAuthenticated()"><a href="/logout">Wyloguj sie</a></li>
+				</ul>
+			</div>
+			<!-- /.navbar-collapse -->
+		</div>
+		<!-- /.container-fluid -->
+	</nav>
+
+	<main>
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12 col-sm-12 col-md-8">
+				<h1 class="title">
+					Tag: <span th:text="${tag.name}"></span>
+				</h1>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-12 col-md-8">
+				<div class="panel panel-default">
+					<div class="panel-body">
+
+						<ul class="list-group">
+							<li th:each="thread : ${tag.threads}" class="list-group-item">
+								<div class="row">
+									<div class="col-xs-12 col-sm-6 col-md-6">
+										<span class="thread-name"><a
+											th:href="@{'/thread/' + ${thread.id}}"><b
+												th:text="${thread.subject}"></b></a></span>
+									</div>
+									<div class="col-xs-12 col-sm-6 col-md-6">
+										<span class="thread-date" th:text="${#dates.format(thread.entryDate, 'yyyy-MM-dd HH:mm')}"></span>
+									</div>
+									<div class="col-xs-12 col-sm-6 col-md-6">
+										<ul class="breadcrumb">
+											<li>Autor: <a th:text="${thread.user.username}"
+												th:href="@{'/profile/' + ${thread.user.id}}"></a></li>
+											<li>Wyswietlenia: <span th:text="${thread.viewsCount}"></span></li>
+										</ul>
+									</div>
+									<div class="col-xs-12 col-sm-12 col-md-12">
+										<a th:href="@{'/thread/' + ${thread.id}}"><p
+												class="thread-preview" th:text="${thread.content}"></p></a>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-12 col-md-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">Najbardziej aktywni</div>
+					<div class="panel-body">
+						<ul class="list-group">
+							<li class="list-group-item">
+								<div class="row">
+									<div class="col-xs-4 col-sm-4 col-md-4">
+										<div class="thread-name"><b>Nazwa</b></div>
+									</div>
+									<div class="col-xs-2 col-sm-2 col-md-2">
+										<span class="span12 text-center"></span>
+									</div>
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<span class="thread-date"><b>Ilość Komentarzy</b></span>
+									</div>
+								</div>
+							</li>
+							<li th:each="bestUser : ${bestUsers}" class="list-group-item">
+								<div class="row">
+									<div class="col-xs-4 col-sm-4 col-md-4">
+										<div class="thread-name">
+											<a th:href="@{'/profile/' + ${bestUser.id}}" th:text="${bestUser.username}"></a>
+										</div>
+									</div>
+									<div class="col-xs-4 col-sm-4 col-md-4">
+										<span class="span12 text-center"></span>
+									</div>
+									<div class="col-xs-4 col-sm-4 col-md-4">
+										<span class="thread-date" th:text="${bestUser.commentsCount}"></span>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</main>
+
+	<footer class="footer">
+		<div class="container">
+			<span class="text-muted">Wojciech Bać ©</span>
+		</div>
+	</footer>
+
+	<script src="/js/jquery-3.1.1.min.js"></script>
+	<script src="/css/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+</body>
+</html>

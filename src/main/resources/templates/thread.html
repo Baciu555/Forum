@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta charset="UTF-8" />
+<title>Forum</title>
+<link rel="stylesheet"
+	href="/css/bootstrap-3.3.7-dist/css/bootstrap.css" />
+<link rel="stylesheet" href="/css/bootstrap-3.3.7-dist/css/style.css" />
+</head>
+<body>
+
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+					aria-expanded="false">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/main">Forum</a>
+			</div>
+
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse"
+				id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown" role="button" aria-haspopup="true"
+						aria-expanded="false">Kategorie <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li th:each="section : ${sections}"><a
+								th:href="@{'/section/' + ${section.id}}"
+								th:text="${section.name}"></a></li>
+						</ul></li>
+						<li><a href="/search">Szukaj</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li sec:authorize="hasRole('ROLE_ADMIN')"><a href="/admin">Admin</a></li>
+					<li sec:authorize="!isAuthenticated()"><a href="/login">Zaloguj
+							sie</a></li>
+					<li sec:authorize="isAuthenticated()"><a
+						sec:authentication="name" href="/user/account"></a></li>
+					<li sec:authorize="isAuthenticated()"><a href="/logout">Wyloguj
+							sie</a></li>
+				</ul>
+			</div>
+			<!-- /.navbar-collapse -->
+		</div>
+		<!-- /.container-fluid -->
+	</nav>
+
+	<main>
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12 col-sm-12 col-md-8">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<a href=""><h3 th:text="${thread.subject}"></h3></a>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-xs-12 col-sm-6 col-md-6">
+								<span class="thread-name">Autor: <a
+									th:href="@{'/profile/' + ${thread.user.id}}"><span
+										th:text="${thread.user.username}"></span></a></span>
+							</div>
+							<div class="col-xs-12 col-sm-6 col-md-6">
+								<span
+									th:text="${#dates.format(thread.entryDate, 'yyyy-MM-dd HH:mm')}"
+									class="thread-date"></span>
+							</div>
+							<div class="col-xs-12 col-sm-6 col-md-6">
+								<span class="thread-name">Liczba Wyświetleń: <span
+									th:text="${thread.viewsCount}"></span></span>
+							</div>
+							<div class="col-xs-12 col-sm-6 col-md-6"></div>
+							<div class="col-xs-12 col-sm-12 col-md-12">
+								<p th:text="${thread.content}" class="thread-preview"></p>
+							</div>
+
+							<div class="col-xs-12 col-sm-12 col-md-12">
+								<a th:each="tag : ${thread.tags}"
+									th:href="@{'/tag/' + ${tag.id}}"><button type="button"
+										class="btn btn-info tag">
+										<span th:text="${tag.name}"></span>
+									</button></a>
+							</div>
+							<div sec:authorize="hasRole('ROLE_ADMIN')"
+								class="col-xs-12 col-sm-12 col-md-12">
+								<hr />
+								<form th:action="@{'/admin/thread/delete/' + ${thread.id}}"
+									method="post" id="deleteThreadForm">
+									<a>
+										<button type="submit" class="btn btn-danger">Usuń
+											wątek</button>
+									</a>
+									<p class="bg-danger" th:text="${deleteThreadMsg}"></p>
+
+								</form>
+							</div>
+
+						</div>
+					</div>
+				</div>
+				<h3 class="title">Komentarze</h3>
+				<p class="bg-danger" th:text="${deleteCommentMsg}"></p>
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<ul class="list-group">
+							<li th:if="${#lists.isEmpty(thread.comments)}"
+								class="list-group-item">Wątek nie został jeszcze
+								skomentowany</li>
+							<li th:each="comment : ${thread.comments}"
+								class="list-group-item">
+								<div class="row">
+									<div class="col-xs-12 col-sm-6 col-md-6">
+										<span class="thread-name">Autor: <a
+											th:href="@{'/profile/' + ${comment.user.id}}"><span
+												th:text="${comment.user.username}"></span></a></span>
+									</div>
+									<div class="col-xs-12 col-sm-6 col-md-6">
+										<span
+											th:text="${#dates.format(comment.thread.entryDate, 'yyyy-MM-dd HH:mm')}"
+											class="comment-date"></span>
+									</div>
+									<div class="col-xs-12 col-sm-12 col-md-12">
+										<p th:text="${comment.content}" class="thread-preview"></p>
+									</div>
+									<div sec:authorize="hasRole('ROLE_ADMIN')"
+										class="col-xs-12 col-sm-12 col-md-12">
+										<hr />
+										<form th:action="@{'/admin/comment/delete/' + ${comment.id}}"
+											method="post">
+											<a><button type="submit" class="btn btn-danger">Usuń
+													komentarz</button></a>
+										</form>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div sec:authorize="isAuthenticated()" class="panel panel-default">
+					<div class="panel-body">
+						<form th:action="@{'/user/thread/' + ${thread.id}}"
+							th:object="${comment}" method="post">
+							<div class="form-group">
+								<label for="comment-content">Tresc</label>
+								<textarea th:field="*{content}" type="text" class="form-control"></textarea>
+								<p th:errors="*{content}" class="bg-danger"></p>
+								<p th:text="${contentMessage}" class="bg-danger"></p>
+							</div>
+
+							<button type="submit" id="add-comment-btn"
+								class="btn btn-default">Skomentuj</button>
+						</form>
+					</div>
+				</div>
+				<div sec:authorize="!isAuthenticated()">
+					<p class="title">
+						Aby dodać komentarz musisz się <a href="/login">zalogować</a>
+					</p>
+				</div>
+			</div>
+
+			<div class="col-xs-12 col-sm-12 col-md-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">Najbardziej aktywni</div>
+					<div class="panel-body">
+						<ul class="list-group">
+							<li class="list-group-item">
+								<div class="row">
+									<div class="col-xs-4 col-sm-4 col-md-4">
+										<div class="thread-name">
+											<b>Nazwa</b>
+										</div>
+									</div>
+									<div class="col-xs-2 col-sm-2 col-md-2">
+										<span class="span12 text-center"></span>
+									</div>
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<span class="thread-date"><b>Ilość Komentarzy</b></span>
+									</div>
+								</div>
+							</li>
+							<li th:each="bestUser : ${bestUsers}" class="list-group-item">
+								<div class="row">
+									<div class="col-xs-4 col-sm-4 col-md-4">
+										<div class="thread-name">
+											<a th:href="@{'/profile/' + ${bestUser.id}}"
+												th:text="${bestUser.username}"></a>
+										</div>
+									</div>
+									<div class="col-xs-4 col-sm-4 col-md-4">
+										<span class="span12 text-center"></span>
+									</div>
+									<div class="col-xs-4 col-sm-4 col-md-4">
+										<span class="thread-date" th:text="${bestUser.commentsCount}"></span>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</main>
+
+	<footer class="footer">
+		<div class="container">
+			<span class="text-muted">Wojciech Bać ©</span>
+		</div>
+	</footer>
+
+	<script src="/js/jquery-3.1.1.min.js"></script>
+	<script src="/css/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+	<script src="/js/script.js"></script>
+</body>
+</html>

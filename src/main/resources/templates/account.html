@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+	<meta charset="UTF-8"/>
+	<title>Forum</title>
+	<link rel="stylesheet" href="../css/bootstrap-3.3.7-dist/css/bootstrap.css"/>
+	<link rel="stylesheet" href="../css/bootstrap-3.3.7-dist/css/style.css"/>
+</head>
+<body>
+
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/main">Forum</a>
+			</div>
+
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse"
+				id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown" role="button" aria-haspopup="true"
+						aria-expanded="false">Kategorie <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li th:each="section : ${sections}"><a
+								th:href="@{'/section/' + ${section.id}}"
+								th:text="${section.name}"></a></li>
+						</ul></li>
+						<li><a href="/search">Szukaj</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li sec:authorize="hasRole('ROLE_ADMIN')"><a href="/admin">Admin</a></li>
+					<li sec:authorize="!isAuthenticated()"><a href="/login">Zaloguj
+							sie</a></li>
+					<li sec:authorize="isAuthenticated()"><a sec:authentication="name" href="/user/account"></a></li>
+					<li sec:authorize="isAuthenticated()"><a href="/logout">Wyloguj sie</a></li>
+				</ul>
+			</div>
+			<!-- /.navbar-collapse -->
+		</div><!-- /.container-fluid -->
+	</nav>
+
+
+	<main>
+
+		<div class="container">
+
+			<h1 class="title">Twoje Konto</h1>
+
+			<div class="jumbotron">
+				<div class="user-data">
+					<div id="avatar">
+						<img style="width: 200px; height: 200px" th:src="@{'../uploads/' + ${loggedUser.avatarPath}}" alt="" class="img-thumbnail"/>
+					</div>
+
+					<div id="login" class="center"><p>Login: <span th:text="${loggedUser.username}"></span></p></div>
+					<div id="email"><p>Email: <span th:text="${loggedUser.email}"></span></p></div>
+					<div id="join-date"><p>Data Dołączenia: <span th:text="${#dates.format(loggedUser.joinDate, 'yyyy-MM-dd HH:mm')}"></span></p></div>
+					<span><a th:href="@{'/user/editData'}">[Edytuj  Dane]</a></span>
+					<span><a th:href="@{'/user/editPassword'}">[Zmień hasło]</a></span>
+					<span><a th:href="@{'/user/editAvatar'}">[Zmień avatar]</a></span>
+				</div>
+			</div>
+
+			<h3 class="title">Twoje wpisy</h3>
+
+			<div class="panel panel-default">
+			<div class="panel-body">
+							<ul class="list-group">
+								<li th:each="thread : ${loggedUser.thread}" class="list-group-item">
+									<div class="row">
+										<div class="col-xs-12 col-sm-6 col-md-6">
+										<span class="thread-name"><a th:href="@{'/thread/' + ${thread.id}}"><b th:text="${thread.subject}"></b></a></span>
+										</div>
+										<div class="col-xs-12 col-sm-6 col-md-6">
+											<span th:text="${#dates.format(thread.entryDate, 'yyyy-MM-dd HH:mm')}" class="thread-date"></span>
+										</div>
+										<div class="col-xs-12 col-sm-6 col-md-6">
+											<span>Autor: <a th:text="${thread.user.username}" th:href="@{'/profile/' + ${thread.user.id}}">Cereal</a></span> | <span>Odpowiedzi: <span th:text="${thread.viewsCount}"></span></span> 
+										</div>
+										<div class="col-xs-12 col-sm-12 col-md-12">
+											<a th:href="@{'/thread/' + ${thread.id}}"><p th:text="${thread.content}" class="thread-preview"></p></a>
+										</div>
+									</div>
+								</li>
+		</ul>
+		</div>
+		</div>
+		</div>
+	</main>
+
+	<footer class="footer">
+		<div class="container">
+			<span class="text-muted">Wojciech Bać ©</span>
+		</div>
+	</footer>
+	
+	<script src="../js/jquery-3.1.1.min.js"></script>
+	<script src="../css/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+</body>
+</html>
